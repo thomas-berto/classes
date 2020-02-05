@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 class User
 {
     private $id;
@@ -38,11 +38,12 @@ class User
             //var_dump($result);
             if (!empty($result)) {
                 if (password_verify($password, $result[0][5])) {
+                    $this->id = $result[0][0];
                     $this->login = $result[0][1];
                     $this->email = $result[0][2];
                     $this->firstname = $result[0][3];
                     $this->lastname = $result[0][4];
-                    echo "Connexion validée";
+                    echo "Connexion validée<br>";
                     return [$this->login, $this->email, $this->firstname, $this->lastname];
                 } else {
                     echo "Mauvais password";
@@ -54,7 +55,21 @@ class User
             echo "Veuillez remplir les champs";
         }
     }
+
+    public function disconnect()
+    {
+        if ($this->login != NULL) {
+            $this->id = NULL;
+            $this->login = NULL;
+            $this->email = NULL;
+            $this->firstname = NULL;
+            $this->lastname = NULL;
+            session_destroy();
+            return "Déconnexion";
+        }
+    }
 }
-//$sam = new User();  // Création d'user
+$sam = new User();  // Création d'user
 //var_dump($sam->register("sam", "sam@sam.fr", "sam", "jolly", "0000")); //exo 1
-//var_dump($sam->connect("sam", "0000")); // exo 2
+($sam->connect("sam", "0000")); // exo 2
+echo $sam->disconnect();
